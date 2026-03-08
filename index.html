@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweta Medical Store | Goh, Bihar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { brand: '#ff6f61', brandDark: '#e65c50', success: '#22c55e' } } }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #ff6f61; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between gap-4">
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="location.reload()">
+                <div class="bg-brand p-1.5 rounded-lg text-white">
+                    <i class="fas fa-plus-square text-xl"></i>
+                </div>
+                <h1 class="text-xl font-extrabold tracking-tight hidden sm:block">Sweta Medical</h1>
+                <h1 class="text-lg font-extrabold tracking-tight sm:hidden">Sweta</h1>
+            </div>
+
+            <div class="flex-1 max-w-lg relative">
+                <div class="relative group">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="searchInput" placeholder="Search medicines..." 
+                        class="w-full border-2 border-gray-100 py-2 pl-11 pr-4 rounded-full focus:outline-none focus:border-brand bg-gray-50 transition-all text-sm" 
+                        onkeyup="handleSearch(this.value)">
+                </div>
+            </div>
+
+            <button onclick="openCart()" class="relative p-2.5 bg-gray-100 rounded-full hover:bg-brand hover:text-white transition-all group">
+                <i class="fas fa-shopping-basket text-xl"></i>
+                <span id="cartCount" class="absolute -top-1 -right-1 bg-brand group-hover:bg-black text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">0</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-6">
+        <div class="bg-gradient-to-br from-brand to-brandDark rounded-3xl p-6 text-white mb-8 shadow-xl shadow-brand/20 relative overflow-hidden">
+            <div class="relative z-10">
+                <h2 class="text-2xl font-extrabold mb-1">Dawaiyan mangwayein ghar baithe!</h2>
+                <p class="text-sm opacity-90 mb-4 font-medium">Fast delivery in Goh, Aurangabad (Bihar)</p>
+                <div class="flex items-center gap-2 bg-white/20 w-fit px-4 py-2 rounded-xl backdrop-blur-md">
+                    <i class="fas fa-phone-alt"></i>
+                    <span class="font-bold">9162672683</span>
+                </div>
+            </div>
+            <i class="fas fa-truck-medical absolute -right-4 -bottom-4 text-9xl opacity-10 rotate-12"></i>
+        </div>
+
+        <div class="flex items-center justify-between mb-6">
+            <h2 id="sectionTitle" class="text-lg font-extrabold flex items-center gap-2">
+                <span class="w-2 h-6 bg-brand rounded-full"></span> Popular Medicines
+            </h2>
+        </div>
+        
+        <div id="medicineGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            </div>
+    </main>
+
+    <div id="cartModal" class="fixed inset-0 bg-black/60 hidden z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl w-full max-w-md p-6 shadow-2xl relative">
+            <button onclick="closeCart()" class="absolute top-5 right-5 text-gray-400 hover:text-black transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            
+            <div class="flex items-center gap-3 mb-6">
+                <div class="bg-brand/10 p-3 rounded-2xl text-brand">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                </div>
+                <h2 class="text-xl font-extrabold">Your Basket</h2>
+            </div>
+            
+            <div id="cartItemsList" class="space-y-3 mb-6 max-h-[40vh] overflow-y-auto pr-2 custom-scroll">
+                </div>
+
+            <div class="border-t border-gray-100 pt-5 space-y-4">
+                <div class="flex justify-between items-center px-2">
+                    <span class="text-gray-500 font-semibold">Total Bill:</span>
+                    <span id="totalPrice" class="text-2xl font-extrabold text-brand">₹0</span>
+                </div>
+                
+                <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Delivery Details</label>
+                    <input type="text" id="custName" placeholder="Enter Your Name" 
+                        class="w-full border-2 border-gray-50 bg-gray-50 p-4 rounded-2xl outline-none focus:border-brand focus:bg-white transition-all text-sm font-semibold">
+                </div>
+
+                <button onclick="sendToWhatsApp()" class="w-full bg-green-500 text-white font-extrabold py-4 rounded-2xl flex items-center justify-center gap-3 hover:bg-green-600 shadow-lg shadow-green-200 active:scale-95 transition-all">
+                    <i class="fab fa-whatsapp text-2xl"></i> CONFIRM ON WHATSAPP
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // High Quality Reliable Medicine Photos from Unsplash/Source
+        const medicines = [
+            {name: "Dolo 650 Tablet", price: 30, use: "Fever & Pain", img: "https://images.unsplash.com/photo-1584308666744-24d5e478229b?w=400&q=80"},
+            {name: "Pan-D Capsule", price: 199, use: "Acidity & Gas", img: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&q=80"},
+            {name: "Azee 500 Tablet", price: 119, use: "Antibiotic", img: "https://images.unsplash.com/photo-1628771065518-0d82f1938462?w=400&q=80"},
+            {name: "Shelcal 500 Tablet", price: 131, use: "Calcium", img: "https://images.unsplash.com/photo-1550572017-edb9b47e85da?w=400&q=80"},
+            {name: "Neurobion Forte", price: 38, use: "Nerve Health", img: "https://images.unsplash.com/photo-1471864190281-ad5fe9afef77?w=400&q=80"},
+            {name: "Calpol 500 Tablet", price: 16, use: "Mild Fever", img: "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=400&q=80"},
+            {name: "Zerodol SP Tablet", price: 118, use: "Swelling & Pain", img: "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400&q=80"},
+            {name: "Omee Capsule", price: 59, use: "Heartburn", img: "https://images.unsplash.com/photo-1587854692152-cbe660dbbb88?w=400&q=80"},
+            {name: "Digene Gel Syrup", price: 140, use: "Acidity Gel", img: "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400&q=80"},
+            {name: "Limcee 500", price: 26, use: "Vitamin C", img: "https://images.unsplash.com/photo-1614859324967-bdf24c6ea97a?w=400&q=80"},
+            {name: "Electral ORS", price: 22, use: "Energy", img: "https://images.unsplash.com/photo-1527018601619-a508a2be00cd?w=400&q=80"},
+            {name: "Evion 400 Capsule", price: 39, use: "Vitamin E", img: "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&q=80"},
+            {name: "Volini Spray", price: 195, use: "Pain Spray", img: "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=400&q=80"},
+            {name: "Combiflam Tablet", price: 44, use: "Pain Relief", img: "https://images.unsplash.com/photo-1584308666744-24d5e478229b?w=400&q=80"},
+            {name: "Zifi 200 Tablet", price: 108, use: "Infection", img: "https://images.unsplash.com/photo-1628771065518-0d82f1938462?w=400&q=80"},
+            {name: "Honitus Syrup", price: 110, use: "Herbal Cough", img: "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=400&q=80"}
+        ];
+
+        let cart = [];
+
+        function render(list) {
+            const grid = document.getElementById('medicineGrid');
+            grid.innerHTML = list.map((med, index) => `
+                <div class="bg-white rounded-3xl border border-gray-100 p-4 flex flex-col items-center text-center shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div class="w-full h-32 mb-4 bg-gray-50 rounded-2xl overflow-hidden relative">
+                        <img src="${med.img}" class="w-full h-full object-cover" alt="${med.name}" onerror="this.src='https://via.placeholder.com/400x400?text=Medicine'">
+                        <div class="absolute top-2 left-2 bg-white/90 px-2 py-1 rounded-lg text-[8px] font-black text-gray-500 shadow-sm">AUTHENTIC</div>
+                    </div>
+                    <h3 class="text-sm font-extrabold h-10 overflow-hidden leading-tight mb-1 text-gray-800">${med.name}</h3>
+                    <p class="text-[10px] text-gray-400 font-bold mb-4 uppercase tracking-tighter">${med.use}</p>
+                    <div class="flex justify-between items-center w-full mt-auto pt-3 border-t border-gray-50">
+                        <span class="font-extrabold text-brand text-lg">₹${med.price}</span>
+                        <button onclick="addToCart('${med.name}', ${med.price})" 
+                            class="bg-gray-900 text-white text-[10px] px-4 py-2 rounded-xl font-black hover:bg-brand active:scale-90 transition-all shadow-md">ADD</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(name, price) {
+            cart.push({name, price});
+            document.getElementById('cartCount').innerText = cart.length;
+            const btn = event.target;
+            btn.innerHTML = '<i class="fas fa-check"></i>';
+            btn.classList.add('bg-green-500');
+            setTimeout(() => { btn.innerHTML = 'ADD'; btn.classList.remove('bg-green-500'); }, 700);
+        }
+
+        function handleSearch(val) {
+            const query = val.toLowerCase();
+            const filtered = medicines.filter(m => m.name.toLowerCase().includes(query) || m.use.toLowerCase().includes(query));
+            render(filtered);
+        }
+
+        function openCart() {
+            const modal = document.getElementById('cartModal');
+            const list = document.getElementById('cartItemsList');
+            const total = document.getElementById('totalPrice');
+            modal.classList.remove('hidden');
+            
+            if(cart.length === 0) {
+                list.innerHTML = `<div class="text-center py-10 opacity-30 font-bold"><i class="fas fa-shopping-basket text-6xl mb-4"></i><p>Basket is empty</p></div>`;
+                total.innerText = "₹0";
+            } else {
+                list.innerHTML = cart.map((item, idx) => `
+                    <div class="flex justify-between items-center bg-gray-50 p-4 rounded-2xl border border-gray-100 animate-in fade-in slide-in-from-bottom-2">
+                        <div>
+                            <p class="text-sm font-extrabold text-gray-800">${item.name}</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">₹${item.price} / pack</p>
+                        </div>
+                        <button onclick="removeFromCart(${idx})" class="text-red-400 hover:text-red-600 transition p-2"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                `).join('');
+                total.innerText = "₹" + cart.reduce((s, i) => s + i.price, 0);
+            }
+        }
+
+        function removeFromCart(idx) {
+            cart.splice(idx, 1);
+            document.getElementById('cartCount').innerText = cart.length;
+            openCart();
+        }
+
+        function closeCart() {
+            document.getElementById('cartModal').classList.add('hidden');
+        }
+
+        function sendToWhatsApp() {
+            const name = document.getElementById('custName').value;
+            if(!name) { alert("Pehle apna naam likhein!"); return; }
+            if(cart.length === 0) { alert("Basket khali hai!"); return; }
+
+            const shopNumber = "9162672683";
+            let orderItems = cart.map(i => "- " + i.name).join("%0A");
+            let total = cart.reduce((s, i) => s + i.price, 0);
+            
+            let message = `*SWETA MEDICAL STORE ORDER*%0A--------------------------%0A*Name:* ${name}%0A*Items:*%0A${orderItems}%0A%0A*Bill Total:* ₹${total}%0A--------------------------%0A_Please confirm and deliver._`;
+            
+            window.open(`https://wa.me/${shopNumber}?text=${message}`, '_blank');
+        }
+
+        window.onload = () => render(medicines);
+    </script>
+</body>
+</html>
